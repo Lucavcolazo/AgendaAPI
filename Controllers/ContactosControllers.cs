@@ -68,5 +68,3 @@ namespace AgendaAPI.Controllers
         }
     }
 }
-
-
