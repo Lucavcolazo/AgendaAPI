@@ -16,7 +16,7 @@ namespace AgendaAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Evento>> GetEventos() => Ok(eventos);
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // Obtiene un evento por su id
         public ActionResult<Evento> GetEvento(int id)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
@@ -24,7 +24,7 @@ namespace AgendaAPI.Controllers
             return Ok(evento);
         }
 
-        [HttpPost]
+        [HttpPost] // Crea un nuevo evento
         public ActionResult<Evento> CreateEvento([FromBody] EventoDto nuevoEventoDto)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId);
@@ -35,15 +35,25 @@ namespace AgendaAPI.Controllers
                 Titulo = nuevoEventoDto.Titulo,
                 Fecha = nuevoEventoDto.Fecha,
                 Duracion = nuevoEventoDto.Duracion,
-                Contacto = contacto // Asocia el contacto al evento, puede ser null
+                Contacto = contacto // Asocia el contacto al evento y puede ser null si  no ponen contacto
             };
+
+            // Aca podemos validar la superpocicion de eventos, si hay uno se da error 409
+            var finNuevoEvento = nuevoEvento.Fecha.AddMinutes(nuevoEvento.Duracion);
+            var eventoSuperpuesto = eventos.Any(e =>
+                e.Fecha < finNuevoEvento && nuevoEvento.Fecha < e.Fecha.AddMinutes(e.Duracion));
+
+            if (eventoSuperpuesto)
+            {
+                return Conflict("El nuevo evento se superpone con un evento existente.");
+            }
 
             eventos.Add(nuevoEvento);
 
             return CreatedAtAction(nameof(GetEvento), new { id = nuevoEvento.Id }, nuevoEvento);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] // Actualiza un evento por su id
         public IActionResult UpdateEvento(int id, Evento eventoActualizado)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
@@ -57,7 +67,7 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // Elimina un evento por su id
         public IActionResult DeleteEvento(int id)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
@@ -67,16 +77,16 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        // desde aca estan las rutas para buscar por dia/senmana/mes
-        
-        [HttpGet("dia/{fecha}")]
+        // Desde aca estan las rutas para buscar por dia/senmana/mes
+
+        [HttpGet("dia/{fecha}")] // Obtiene los eventos de un día específico (formato YYYY-MM-DD)
         public ActionResult<IEnumerable<Evento>> GetEventosPorDia(DateTime fecha)
         {
             var eventosPorDia = eventos.Where(e => e.Fecha.Date == fecha.Date).ToList();
             return Ok(eventosPorDia);
         }
 
-        [HttpGet("semana/{fecha}")]
+        [HttpGet("semana/{fecha}")] // Obtiene los eventos de la semana de una fecha específica (formato YYYY-MM-DD)
         public ActionResult<IEnumerable<Evento>> GetEventosPorSemana(DateTime fecha)
         {
             var inicioSemana = fecha.Date.AddDays(-(int)fecha.DayOfWeek);
@@ -85,7 +95,7 @@ namespace AgendaAPI.Controllers
             return Ok(eventosPorSemana);
         }
 
-        [HttpGet("mes/{fecha}")]
+        [HttpGet("mes/{fecha}")]  // Obtiene los eventos de un mes específico (formato YYYY-MM)
         public ActionResult<IEnumerable<Evento>> GetEventosPorMes(DateTime fecha)
         {
             var inicioMes = new DateTime(fecha.Year, fecha.Month, 1);

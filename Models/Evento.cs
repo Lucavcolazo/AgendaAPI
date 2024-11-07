@@ -6,6 +6,6 @@ namespace AgendaAPI.Models
         public string Titulo { get; set; }
         public DateTime Fecha { get; set; }
         public int Duracion { get; set; }
-        public Contacto Contacto { get; set; } // Nueva propiedad
+        public Contacto Contacto { get; set; }
     }
 }
