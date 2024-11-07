@@ -66,13 +66,32 @@ namespace AgendaAPI.Controllers
             eventos.Remove(evento);
             return NoContent();
         }
-    }
 
-    public class EventoDto
-    {
-        public string Titulo { get; set; }
-        public DateTime Fecha { get; set; }
-        public int Duracion { get; set; }
-        public int ContactoId { get; set; } // Solo el ID del contacto
+        // desde aca estan las rutas para buscar por dia/senmana/mes
+        
+        [HttpGet("dia/{fecha}")]
+        public ActionResult<IEnumerable<Evento>> GetEventosPorDia(DateTime fecha)
+        {
+            var eventosPorDia = eventos.Where(e => e.Fecha.Date == fecha.Date).ToList();
+            return Ok(eventosPorDia);
+        }
+
+        [HttpGet("semana/{fecha}")]
+        public ActionResult<IEnumerable<Evento>> GetEventosPorSemana(DateTime fecha)
+        {
+            var inicioSemana = fecha.Date.AddDays(-(int)fecha.DayOfWeek);
+            var finSemana = inicioSemana.AddDays(7);
+            var eventosPorSemana = eventos.Where(e => e.Fecha >= inicioSemana && e.Fecha < finSemana).ToList();
+            return Ok(eventosPorSemana);
+        }
+
+        [HttpGet("mes/{fecha}")]
+        public ActionResult<IEnumerable<Evento>> GetEventosPorMes(DateTime fecha)
+        {
+            var inicioMes = new DateTime(fecha.Year, fecha.Month, 1);
+            var finMes = inicioMes.AddMonths(1);
+            var eventosPorMes = eventos.Where(e => e.Fecha >= inicioMes && e.Fecha < finMes).ToList();
+            return Ok(eventosPorMes);
+        }
     }
 }
