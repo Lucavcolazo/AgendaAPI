@@ -27,8 +27,12 @@ namespace AgendaAPI.Controllers
         [HttpPost]
         public ActionResult<Evento> CreateEvento([FromBody] EventoDto nuevoEventoDto)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId);
-            if (contacto == null) return NotFound("Contacto no encontrado");
+            Contacto contacto = null;
+            if (nuevoEventoDto.ContactoId.HasValue && nuevoEventoDto.ContactoId.Value != 0)
+            {
+                contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId.Value);
+                if (contacto == null) return NotFound("Contacto no encontrado");
+            }
 
             var nuevoEvento = new Evento
             {
@@ -36,7 +40,7 @@ namespace AgendaAPI.Controllers
                 Titulo = nuevoEventoDto.Titulo,
                 Fecha = nuevoEventoDto.Fecha,
                 Duracion = nuevoEventoDto.Duracion,
-                Contacto = contacto // Asocia el contacto al evento
+                Contacto = contacto // Asocia el contacto al evento si existe
             };
 
             eventos.Add(nuevoEvento);
@@ -66,13 +70,5 @@ namespace AgendaAPI.Controllers
             eventos.Remove(evento);
             return NoContent();
         }
-    }
-
-    public class EventoDto
-    {
-        public string Titulo { get; set; }
-        public DateTime Fecha { get; set; }
-        public int Duracion { get; set; }
-        public int ContactoId { get; set; } // Solo el ID del contacto
     }
 }
