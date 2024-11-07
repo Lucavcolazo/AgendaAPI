@@ -10,6 +10,7 @@ namespace AgendaAPI.Models
     public DateTime Fecha { get; set; }
     public TimeSpan Duracion { get; set; }
     public string Lugar { get; set; }
-    public List<int> ParticipantesIds { get; set; } = new List<int>();
+    public List<Contacto> Participantes { get; set; } = new List<Contacto>();
+    //Ver si usamos linq para que se linkee derecho con la lista de contactos :D
     }
 }

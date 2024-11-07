@@ -31,3 +31,4 @@ C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.pdb
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.genruntimeconfig.cache
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\ref\AgendaAPI.dll
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.sourcelink.json
