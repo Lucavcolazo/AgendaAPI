@@ -1,0 +1,7 @@
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.csproj.AssemblyReference.cache
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.AssemblyInfoInputs.cache
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.AssemblyInfo.cs
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.csproj.CoreCompileInputs.cache
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net6.0\AgendaAPI.sourcelink.json

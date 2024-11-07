@@ -1,3 +1,4 @@
+using System;
 public class EventoDto
     {
         public string Titulo { get; set; }
