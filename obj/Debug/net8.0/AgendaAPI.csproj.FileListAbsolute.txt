@@ -17,6 +17,7 @@ C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.csproj.CoreCompileInputs.cache
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.MvcApplicationPartsAssemblyInfo.cs
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.sourcelink.json
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\staticwebassets.build.json
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\staticwebassets.development.json
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\staticwebassets\msbuild.AgendaAPI.Microsoft.AspNetCore.StaticWebAssets.props
@@ -31,4 +32,3 @@ C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.pdb
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.genruntimeconfig.cache
 C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\ref\AgendaAPI.dll
-C:\Cosas Facultad\2do año 2do Cuatri\Programacion 2\AgendaAPI\obj\Debug\net8.0\AgendaAPI.sourcelink.json

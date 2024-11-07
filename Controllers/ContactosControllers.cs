@@ -5,63 +5,51 @@ using System.Linq;
 
 namespace AgendaAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ContactosController : ControllerBase
     {
-        private static List<Contacto> contactos = new List<Contacto>();
-        private static int nextId = 1;
+        private static List<Contacto> contactos = DataStore.Contactos;
+        private static int nextId = 3;
 
-        // GET: api/Contactos
         [HttpGet]
-        public ActionResult<IEnumerable<Contacto>> GetContactos()
-        {
-            return Ok(contactos);
-        }
+        public ActionResult<IEnumerable<Contacto>> GetContactos() => Ok(contactos);
 
-        // GET: api/Contactos/{id}
         [HttpGet("{id}")]
         public ActionResult<Contacto> GetContacto(int id)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null)
-                return NotFound();
-
+            if (contacto == null) return NotFound();
             return Ok(contacto);
         }
 
-        // POST: api/Contactos
         [HttpPost]
-        public ActionResult<Contacto> CreateContacto(Contacto contacto)
+        public ActionResult<Contacto> CreateContacto(Contacto nuevoContacto)
         {
-            contacto.Id = nextId++;
-            contactos.Add(contacto);
-            return CreatedAtAction(nameof(GetContacto), new { id = contacto.Id }, contacto);
+            nuevoContacto.Id = nextId++;
+            contactos.Add(nuevoContacto);
+            return CreatedAtAction(nameof(GetContacto), new { id = nuevoContacto.Id }, nuevoContacto);
         }
 
-        // PUT: api/Contactos/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateContacto(int id, Contacto updatedContacto)
+        public IActionResult UpdateContacto(int id, Contacto contactoActualizado)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null)
-                return NotFound();
+            if (contacto == null) return NotFound();
 
-            contacto.Nombre = updatedContacto.Nombre;
-            contacto.Apellido = updatedContacto.Apellido;
-            contacto.Telefono = updatedContacto.Telefono;
-            contacto.Email = updatedContacto.Email;
+            contacto.Nombre = contactoActualizado.Nombre;
+            contacto.Apellido = contactoActualizado.Apellido;
+            contacto.Email = contactoActualizado.Email;
+            contacto.Telefono = contactoActualizado.Telefono;
 
             return NoContent();
         }
 
-        // DELETE: api/Contactos/{id}
         [HttpDelete("{id}")]
         public IActionResult DeleteContacto(int id)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null)
-                return NotFound();
+            if (contacto == null) return NotFound();
 
             contactos.Remove(contacto);
             return NoContent();
