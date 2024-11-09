@@ -6,7 +6,7 @@ using System.Linq;
 namespace AgendaAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     public class EventosController : ControllerBase
     {
         private static List<Evento> eventos = new List<Evento>();

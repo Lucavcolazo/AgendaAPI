@@ -9,3 +9,5 @@ namespace AgendaAPI.Models
         public string Telefono { get; set; }
     }
 }
+
+// En esta parte esta lo que se pide cuando cargamos o editamos un contacto
