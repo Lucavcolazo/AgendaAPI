@@ -9,30 +9,35 @@ namespace AgendaAPI.Controllers
     [Route("api/[controller]")]
     public class ContactosController : ControllerBase
     {
-        private static List<Contacto> contactos = DataStore.Contactos;
-        private static int nextId = 3;
+        private static List<Contacto> contactos = DataStore.Contactos; // Referencia a la lista de contactos del DataStore
+        
 
         [HttpGet]
         public ActionResult<IEnumerable<Contacto>> GetContactos() => Ok(contactos);
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // Obtiene un contacto por su id - puede obtener todos
         public ActionResult<Contacto> GetContacto(int id)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null) return NotFound();
+            if (contacto == null) return NotFound(); // Si no se encuentra el contacto se da error 404
             return Ok(contacto);
         }
 
-        [HttpPost]
-        public ActionResult<Contacto> CreateContacto(Contacto nuevoContacto)
+        [HttpPost] // Crea un nuevo contacto
+        public ActionResult<Contacto> CreateContacto([FromBody] Contacto nuevoContacto)
         {
-            nuevoContacto.Id = nextId++;
+            
+            if (contactos.Any(c => c.Id == nuevoContacto.Id)) // Si el id ya existe se da error 409
+            {
+                return Conflict("El ID del contacto ya existe.");
+            }
+
             contactos.Add(nuevoContacto);
-            return CreatedAtAction(nameof(GetContacto), new { id = nuevoContacto.Id }, nuevoContacto);
+            return CreatedAtAction(nameof(GetContacto), new { id = nuevoContacto.Id }, nuevoContacto); // Devuelve el contacto creado
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateContacto(int id, Contacto contactoActualizado)
+        [HttpPut("{id}")] // Actualiza un contacto por su id
+        public IActionResult UpdateContacto(int id, Contacto contactoActualizado) 
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);
             if (contacto == null) return NotFound();
@@ -45,7 +50,7 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // Elimina un contacto por su id
         public IActionResult DeleteContacto(int id)
         {
             var contacto = contactos.FirstOrDefault(c => c.Id == id);

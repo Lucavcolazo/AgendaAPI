@@ -9,5 +9,3 @@ namespace AgendaAPI.Models
         public Contacto Contacto { get; set; }
     }
 }
-
-// En esta parte esta lo que se pide cuando cargamos o editamos un evento

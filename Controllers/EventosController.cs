@@ -9,39 +9,39 @@ namespace AgendaAPI.Controllers
     [Route("api/[controller]")] 
     public class EventosController : ControllerBase
     {
-        private static List<Evento> eventos = new List<Evento>();
+        private static List<Evento> eventos = new List<Evento>(); // Lista de eventos de prueba
         private static List<Contacto> contactos = DataStore.Contactos; // Referencia a la lista de contactos del DataStore
-        private static int nextId = 1;
+        
 
-        [HttpGet]
+        [HttpGet] // Obtiene todos los eventos
         public ActionResult<IEnumerable<Evento>> GetEventos() => Ok(eventos);
 
         [HttpGet("{id}")] // Obtiene un evento por su id
         public ActionResult<Evento> GetEvento(int id)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
-            if (evento == null) return NotFound();
+            if (evento == null) return NotFound(); // 
             return Ok(evento);
         }
 
         [HttpPost] // Crea un nuevo evento
         public ActionResult<Evento> CreateEvento([FromBody] EventoDto nuevoEventoDto)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId);
+            var contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId); // Busca el contacto por su id
 
             var nuevoEvento = new Evento
             {
-                Id = nextId++,
+                Id = nuevoEventoDto.Id,
                 Titulo = nuevoEventoDto.Titulo,
-                Fecha = nuevoEventoDto.Fecha,
-                Duracion = nuevoEventoDto.Duracion,
+                Fecha = nuevoEventoDto.Fecha, // La fecha esta en formato YYYY-MM-DD
+                Duracion = nuevoEventoDto.Duracion, // La duracion esta en minutos
                 Contacto = contacto // Asocia el contacto al evento y puede ser null si  no ponen contacto
             };
 
             // Aca podemos validar la superpocicion de eventos, si hay uno se da error 409
             var finNuevoEvento = nuevoEvento.Fecha.AddMinutes(nuevoEvento.Duracion);
             var eventoSuperpuesto = eventos.Any(e =>
-                e.Fecha < finNuevoEvento && nuevoEvento.Fecha < e.Fecha.AddMinutes(e.Duracion));
+                e.Fecha < finNuevoEvento && nuevoEvento.Fecha < e.Fecha.AddMinutes(e.Duracion)); // Compara las fechas de inicio y fin de los eventos
 
             if (eventoSuperpuesto)
             {
@@ -56,7 +56,7 @@ namespace AgendaAPI.Controllers
         [HttpPut("{id}")] // Actualiza un evento por su id
         public IActionResult UpdateEvento(int id, Evento eventoActualizado)
         {
-            var evento = eventos.FirstOrDefault(e => e.Id == id);
+            var evento = eventos.FirstOrDefault(e => e.Id == id); // Busca el evento por su id
             if (evento == null) return NotFound();
 
             evento.Titulo = eventoActualizado.Titulo;
@@ -77,7 +77,7 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        // Desde aca estan las rutas para buscar por dia/senmana/mes
+        // Desde aca estan las rutas para buscar por dia/semanas/mes
 
         [HttpGet("dia/{fecha}")] // Obtiene los eventos de un día específico (formato YYYY-MM-DD)
         public ActionResult<IEnumerable<Evento>> GetEventosPorDia(DateTime fecha)
@@ -105,3 +105,8 @@ namespace AgendaAPI.Controllers
         }
     }
 }
+
+// La parte de buscar por determinada fecha funciona de la siguiente manera: 
+// - Para buscar por día se usa la ruta /api/eventos/dia/{fecha} donde {fecha} es la fecha en formato YYYY-MM-DD
+// - Para buscar por semana se usa la ruta /api/eventos/semana/{fecha} donde {fecha} es la fecha en formato YYYY-MM-DD
+// - Para buscar por mes se usa la ruta /api/eventos/mes/{fecha} donde {fecha} es la fecha en formato YYYY-MM
