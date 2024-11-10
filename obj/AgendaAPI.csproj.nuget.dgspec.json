@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {}
+    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj": {}
   },
   "projects": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {
+    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
+        "projectUniqueName": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj",
         "projectName": "AgendaAPI",
-        "projectPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
+        "projectPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj",
         "packagesPath": "C:\\Users\\Lua\\.nuget\\packages\\",
-        "outputPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\obj\\",
+        "outputPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Lua\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,6 +46,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.10, )"
@@ -58,9 +62,19 @@
               "target": "Package",
               "version": "[8.0.10, )"
             },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.10, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.2.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

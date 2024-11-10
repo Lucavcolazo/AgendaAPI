@@ -1,4 +1,5 @@
 using AgendaAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace AgendaAPI.Controllers
         public ActionResult<Evento> GetEvento(int id)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
-            if (evento == null) return NotFound(); // 
+            if (evento == null) return NotFound(); // Si no se encuentra el evento se devuelve un error 404
             return Ok(evento);
         }
 
@@ -39,6 +40,7 @@ namespace AgendaAPI.Controllers
             };
 
             // Aca podemos validar la superpocicion de eventos, si hay uno se da error 409
+            
             var finNuevoEvento = nuevoEvento.Fecha.AddMinutes(nuevoEvento.Duracion);
             var eventoSuperpuesto = eventos.Any(e =>
                 e.Fecha < finNuevoEvento && nuevoEvento.Fecha < e.Fecha.AddMinutes(e.Duracion)); // Compara las fechas de inicio y fin de los eventos
@@ -67,6 +69,7 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
+        [Authorize] // Solo los usuarios autenticados pueden eliminar eventos
         [HttpDelete("{id}")] // Elimina un evento por su id
         public IActionResult DeleteEvento(int id)
         {
