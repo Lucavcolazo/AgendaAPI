@@ -5,8 +5,10 @@ namespace AgendaAPI.Models
         public int Id { get; set; }
         public string Titulo { get; set; }
         public DateTime Fecha { get; set; }
-        public int Duracion { get; set; }
-        public Contacto Contacto { get; set; }
+        public TimeSpan Hora { get; set; }
+        public int Duracion { get; set; } // Duración en horas
+        public string Lugar { get; set; }
+        public int? ContactoId { get; set; }
     }
 }
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj": {}
+    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {}
   },
   "projects": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj": {
+    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj",
+        "projectUniqueName": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
         "projectName": "AgendaAPI",
-        "projectPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj",
+        "projectPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
         "packagesPath": "C:\\Users\\Lua\\.nuget\\packages\\",
-        "outputPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\obj\\",
+        "outputPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Lua\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ahbJDU5r3Nc=",
+  "dgSpecHash": "yvfk8uQ1jVI=",
   "success": true,
-  "projectFilePath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPi\\AgendaAPI.csproj",
+  "projectFilePath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lua\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Lua\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

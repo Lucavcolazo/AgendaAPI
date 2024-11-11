@@ -12,7 +12,6 @@ namespace AgendaAPI.Controllers
     {
         private static List<Evento> eventos = new List<Evento>(); // Lista de eventos de prueba
         private static List<Contacto> contactos = DataStore.Contactos; // Referencia a la lista de contactos del DataStore
-        
 
         [HttpGet] // Obtiene todos los eventos
         public ActionResult<IEnumerable<Evento>> GetEventos() => Ok(eventos);
@@ -21,29 +20,34 @@ namespace AgendaAPI.Controllers
         public ActionResult<Evento> GetEvento(int id)
         {
             var evento = eventos.FirstOrDefault(e => e.Id == id);
-            if (evento == null) return NotFound(); // Si no se encuentra el evento se devuelve un error 404
+            if (evento == null) return NotFound();
             return Ok(evento);
         }
 
         [HttpPost] // Crea un nuevo evento
         public ActionResult<Evento> CreateEvento([FromBody] EventoDto nuevoEventoDto)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == nuevoEventoDto.ContactoId); // Busca el contacto por su id
-
             var nuevoEvento = new Evento
             {
-                Id = nuevoEventoDto.Id,
+                Id = eventos.Count + 1,
                 Titulo = nuevoEventoDto.Titulo,
-                Fecha = nuevoEventoDto.Fecha, // La fecha esta en formato YYYY-MM-DD
-                Duracion = nuevoEventoDto.Duracion, // La duracion esta en minutos
-                Contacto = contacto // Asocia el contacto al evento y puede ser null si  no ponen contacto
+                Fecha = nuevoEventoDto.Fecha,
+                Hora = nuevoEventoDto.Hora,
+                Duracion = nuevoEventoDto.Duracion,
+                Lugar = nuevoEventoDto.Lugar,
+                ContactoId = nuevoEventoDto.ContactoId
             };
 
-            // Aca podemos validar la superpocicion de eventos, si hay uno se da error 409
-            
-            var finNuevoEvento = nuevoEvento.Fecha.AddMinutes(nuevoEvento.Duracion);
+            // Controlar la superposición de eventos
+            var nuevoEventoInicio = nuevoEvento.Fecha.Add(nuevoEvento.Hora);
+            var nuevoEventoFin = nuevoEventoInicio.AddHours(nuevoEvento.Duracion);
+
             var eventoSuperpuesto = eventos.Any(e =>
-                e.Fecha < finNuevoEvento && nuevoEvento.Fecha < e.Fecha.AddMinutes(e.Duracion)); // Compara las fechas de inicio y fin de los eventos
+            {
+                var eventoInicio = e.Fecha.Add(e.Hora);
+                var eventoFin = eventoInicio.AddHours(e.Duracion);
+                return nuevoEventoInicio < eventoFin && nuevoEventoFin > eventoInicio;
+            });
 
             if (eventoSuperpuesto)
             {
@@ -63,8 +67,10 @@ namespace AgendaAPI.Controllers
 
             evento.Titulo = eventoActualizado.Titulo;
             evento.Fecha = eventoActualizado.Fecha;
+            evento.Hora = eventoActualizado.Hora;
             evento.Duracion = eventoActualizado.Duracion;
-            evento.Contacto = eventoActualizado.Contacto;
+            evento.Lugar = eventoActualizado.Lugar;
+            evento.ContactoId = eventoActualizado.ContactoId;
 
             return NoContent();
         }
@@ -109,7 +115,3 @@ namespace AgendaAPI.Controllers
     }
 }
 
-// La parte de buscar por determinada fecha funciona de la siguiente manera: 
-// - Para buscar por día se usa la ruta /api/eventos/dia/{fecha} donde {fecha} es la fecha en formato YYYY-MM-DD
-// - Para buscar por semana se usa la ruta /api/eventos/semana/{fecha} donde {fecha} es la fecha en formato YYYY-MM-DD
-// - Para buscar por mes se usa la ruta /api/eventos/mes/{fecha} donde {fecha} es la fecha en formato YYYY-MM
