@@ -51,7 +51,7 @@ namespace AgendaAPI.Controllers
             return NoContent();
         }
 
-        [Authorize (Roles = "Admin")] // Solo los usuarios con rol "Admin" pueden eliminar contactos
+        [Authorize] 
         [HttpDelete("{id}")] // Elimina un contacto por su id
         public IActionResult DeleteContacto(int id)
         {
