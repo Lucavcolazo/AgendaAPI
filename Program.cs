@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using YourProjectNamespace.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +79,33 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build(); 
 
+// Crear roles y asignar roles a los usuarios
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    var roles = new[] { "Admin", "User" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    var adminUser = await userManager.FindByNameAsync("admin");
+    if (adminUser != null && !await userManager.IsInRoleAsync(adminUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
+
+app.UseHttpsRedirection();
+app.UseAuthentication(); // Necesario para usar la autenticación JWT
+app.UseAuthorization();  // Necesario para usar la autorización de roles y permisos
+
 // Configurar la canalización de solicitudes HTTP
 if (app.Environment.IsDevelopment())
 {
@@ -85,9 +113,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthentication(); // Necesario para usar la autenticación JWT
-app.UseAuthorization();  // Necesario para usar la autorización de roles y permisos
 
 app.MapControllers();
 
