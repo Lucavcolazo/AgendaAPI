@@ -1,8 +1,11 @@
 using AgendaAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace AgendaAPI.Controllers
 {
@@ -10,56 +13,93 @@ namespace AgendaAPI.Controllers
     [Route("api/[controller]")]
     public class ContactosController : ControllerBase
     {
-        private static List<Contacto> contactos = DataStore.Contactos; // Referencia a la lista de contactos del DataStore
-        
+        private readonly ApplicationDbContext _context;
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Contacto>> GetContactos() => Ok(contactos);
-
-        [HttpGet("{id}")] // Obtiene un contacto por su id - puede obtener todos
-        public ActionResult<Contacto> GetContacto(int id)
+        // Constructor que recibe ApplicationDbContext
+        public ContactosController(ApplicationDbContext context)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null) return NotFound(); // Si no se encuentra el contacto se da error 404
-            return Ok(contacto);
+            _context = context;
         }
 
-        [HttpPost] // Crea un nuevo contacto
-        public ActionResult<Contacto> CreateContacto([FromBody] Contacto nuevoContacto)
+        // GET: api/contactos
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Contacto>>> GetContactos()
         {
-            
-            if (contactos.Any(c => c.Id == nuevoContacto.Id)) // Si el id ya existe se da error 409
+            // Obtener todos los contactos de la base de datos
+            return Ok(await _context.Contactos.ToListAsync());
+        }
+
+        // GET: api/contactos/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Contacto>> GetContacto(int id)
+        {
+            // Buscar el contacto por su id
+            var contacto = await _context.Contactos.FindAsync(id);
+
+            if (contacto == null)
             {
-                return Conflict("El ID del contacto ya existe.");
+                return NotFound(); // Si no se encuentra, devolver 404
             }
 
-            contactos.Add(nuevoContacto);
-            return CreatedAtAction(nameof(GetContacto), new { id = nuevoContacto.Id }, nuevoContacto); // Devuelve el contacto creado
+            return Ok(contacto); // Devolver el contacto encontrado
         }
 
-        [HttpPut("{id}")] // Actualiza un contacto por su id
-        public IActionResult UpdateContacto(int id, Contacto contactoActualizado) 
+        // POST: api/contactos
+        [HttpPost]
+        public async Task<ActionResult<Contacto>> CreateContacto([FromBody] Contacto nuevoContacto)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null) return NotFound();
+            if (nuevoContacto == null)
+            {
+                return BadRequest(); // Si el contacto no es válido, devolver BadRequest
+            }
 
+            // Agregar el nuevo contacto al DbContext
+            _context.Contactos.Add(nuevoContacto);
+            await _context.SaveChangesAsync(); // Guardar los cambios en la base de datos
+
+            return CreatedAtAction(nameof(GetContacto), new { id = nuevoContacto.Id }, nuevoContacto); // Devolver el contacto creado
+        }
+
+        // PUT: api/contactos/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateContacto(int id, Contacto contactoActualizado)
+        {
+            // Buscar el contacto en la base de datos
+            var contacto = await _context.Contactos.FindAsync(id);
+            if (contacto == null)
+            {
+                return NotFound(); // Si no se encuentra, devolver 404
+            }
+
+            // Actualizar los datos del contacto
             contacto.Nombre = contactoActualizado.Nombre;
             contacto.Apellido = contactoActualizado.Apellido;
             contacto.Email = contactoActualizado.Email;
             contacto.Telefono = contactoActualizado.Telefono;
 
-            return NoContent();
+            await _context.SaveChangesAsync(); // Guardar los cambios
+
+            return NoContent(); // Devolver 204 No Content cuando la actualización sea exitosa
         }
 
+        // DELETE: api/contactos/{id}
         [Authorize] 
-        [HttpDelete("{id}")] // Elimina un contacto por su id
-        public IActionResult DeleteContacto(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteContacto(int id)
         {
-            var contacto = contactos.FirstOrDefault(c => c.Id == id);
-            if (contacto == null) return NotFound();
+            // Buscar el contacto en la base de datos
+            var contacto = await _context.Contactos.FindAsync(id);
 
-            contactos.Remove(contacto);
-            return NoContent();
+            if (contacto == null)
+            {
+                return NotFound(); // Si no se encuentra, devolver 404
+            }
+
+            // Eliminar el contacto
+            _context.Contactos.Remove(contacto);
+            await _context.SaveChangesAsync(); // Guardar los cambios
+
+            return NoContent(); // Devolver 204 No Content cuando la eliminación sea exitosa
         }
     }
 }

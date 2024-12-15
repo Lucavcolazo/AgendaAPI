@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using AgendaAPI.Models;
 
-namespace YourProjectNamespace.Models
+
+namespace AgendaAPI.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -9,6 +11,8 @@ namespace YourProjectNamespace.Models
             : base(options)
         {
         }
+
+        public DbSet<Contacto> Contactos { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
     }
 }
-

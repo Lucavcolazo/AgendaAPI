@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {}
+    "D:\\VisualCode Codigo\\AgendaAPI-master\\AgendaAPI.csproj": {}
   },
   "projects": {
-    "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj": {
+    "D:\\VisualCode Codigo\\AgendaAPI-master\\AgendaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
+        "projectUniqueName": "D:\\VisualCode Codigo\\AgendaAPI-master\\AgendaAPI.csproj",
         "projectName": "AgendaAPI",
-        "projectPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\AgendaAPI.csproj",
-        "packagesPath": "C:\\Users\\Lua\\.nuget\\packages\\",
-        "outputPath": "C:\\Cosas Facultad\\2do año 2do Cuatri\\Programacion 2\\AgendaAPI\\obj\\",
+        "projectPath": "D:\\VisualCode Codigo\\AgendaAPI-master\\AgendaAPI.csproj",
+        "packagesPath": "C:\\Users\\patri\\.nuget\\packages\\",
+        "outputPath": "D:\\VisualCode Codigo\\AgendaAPI-master\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Lua\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\patri\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
