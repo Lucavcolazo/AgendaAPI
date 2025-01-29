@@ -299,3 +299,4 @@ D:\VisualCode Codigo\AgendaAPI-master\obj\Debug\net8.0\scopedcss\bundle\AgendaAP
 D:\VisualCode Codigo\AgendaAPI-master\obj\Debug\net8.0\AgendaAPI.csproj.Up2Date
 D:\VisualCode Codigo\AgendaAPI-master\obj\Debug\net8.0\AgendaAPI.genruntimeconfig.cache
 D:\VisualCode Codigo\AgendaAPI-master\obj\Debug\net8.0\ref\AgendaAPI.dll
+D:\VisualCode Codigo\AgendaAPI-master\obj\Debug\net8.0\AgendaAPI.sourcelink.json

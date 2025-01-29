@@ -1,10 +1,9 @@
 using AgendaAPI.Models;
+using AgendaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AgendaAPI.Controllers
@@ -13,132 +12,88 @@ namespace AgendaAPI.Controllers
     [Route("api/[controller]")]
     public class EventosController : ControllerBase
     {
-        private readonly ApplicationDbContext _context; // DbContext para interactuar con la base de datos
+        private readonly EventoService _eventoService;
 
-        public EventosController(ApplicationDbContext context)
+        public EventosController(EventoService eventoService)
         {
-            _context = context;
+            _eventoService = eventoService;
         }
 
-        [HttpGet] // Obtiene todos los eventos
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Evento>>> GetEventos()
         {
-            var eventos = await _context.Eventos.ToListAsync();
+            var eventos = await _eventoService.GetEventosAsync();
             return Ok(eventos);
         }
 
-        [HttpGet("{id}")] // Obtiene un evento por su id
+        [HttpGet("{id}")]
         public async Task<ActionResult<Evento>> GetEvento(int id)
         {
-            var evento = await _context.Eventos.FirstOrDefaultAsync(e => e.Id == id);
-            if (evento == null) return NotFound();
+            var evento = await _eventoService.GetEventoByIdAsync(id);
+            if (evento == null)
+            {
+                return NotFound();
+            }
+
             return Ok(evento);
         }
 
-        [HttpPost] // Crea un nuevo evento
+        [HttpPost]
         public async Task<ActionResult<Evento>> CreateEvento([FromBody] EventoDto nuevoEventoDto)
         {
-            var nuevoEvento = new Evento
-            {
-                Titulo = nuevoEventoDto.Titulo,
-                Fecha = nuevoEventoDto.Fecha,
-                Hora = nuevoEventoDto.Hora,
-                Duracion = nuevoEventoDto.Duracion,
-                Lugar = nuevoEventoDto.Lugar,
-                ContactoId = nuevoEventoDto.ContactoId
-            };
-
-            // Calcular el inicio y fin del nuevo evento
-            var nuevoEventoInicio = nuevoEvento.Fecha.Add(nuevoEvento.Hora);
-            var nuevoEventoFin = nuevoEventoInicio.AddHours(nuevoEvento.Duracion);
-
-            // Obtener todos los eventos desde la base de datos
-            var eventosExistentes = await _context.Eventos.ToListAsync();
-
-            // Verificar si el nuevo evento se superpone con algún evento existente
-            var eventoSuperpuesto = eventosExistentes.Any(e =>
-                nuevoEventoInicio < e.Fecha.Add(e.Hora).AddHours(e.Duracion) && 
-                nuevoEventoFin > e.Fecha.Add(e.Hora)
-            );
-
-            if (eventoSuperpuesto)
+            var evento = await _eventoService.CreateEventoAsync(nuevoEventoDto);
+            if (evento == null)
             {
                 return Conflict("El nuevo evento se superpone con un evento existente.");
             }
 
-            // Guardar el nuevo evento en la base de datos
-            _context.Eventos.Add(nuevoEvento);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetEvento), new { id = nuevoEvento.Id }, nuevoEvento);
+            return CreatedAtAction(nameof(GetEvento), new { id = evento.Id }, evento);
         }
 
-
-        [HttpPut("{id}")] // Actualiza un evento por su id
-        public async Task<IActionResult> UpdateEvento(int id, Evento eventoActualizado)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvento(int id, [FromBody] Evento eventoActualizado)
         {
-            var evento = await _context.Eventos.FirstOrDefaultAsync(e => e.Id == id);
-            if (evento == null) return NotFound();
-
-            evento.Titulo = eventoActualizado.Titulo;
-            evento.Fecha = eventoActualizado.Fecha;
-            evento.Hora = eventoActualizado.Hora;
-            evento.Duracion = eventoActualizado.Duracion;
-            evento.Lugar = eventoActualizado.Lugar;
-            evento.ContactoId = eventoActualizado.ContactoId;
-
-            await _context.SaveChangesAsync();
+            var result = await _eventoService.UpdateEventoAsync(id, eventoActualizado);
+            if (!result)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
 
-        [Authorize] // Solo los usuarios autenticados pueden eliminar eventos
-        [HttpDelete("{id}")] // Elimina un evento por su id
+        [Authorize]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvento(int id)
         {
-            var evento = await _context.Eventos.FirstOrDefaultAsync(e => e.Id == id);
-            if (evento == null) return NotFound();
-
-            _context.Eventos.Remove(evento);
-            await _context.SaveChangesAsync();
+            var result = await _eventoService.DeleteEventoAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
 
-        // Desde aca estan las rutas para buscar por dia/semanas/mes
-
-        [HttpGet("dia/{fecha}")] // Obtiene los eventos de un día específico (formato YYYY-MM-DD)
+        [HttpGet("dia/{fecha}")]
         public async Task<ActionResult<IEnumerable<Evento>>> GetEventosPorDia(DateTime fecha)
         {
-            var eventosPorDia = await _context.Eventos
-                .Where(e => e.Fecha.Date == fecha.Date)
-                .ToListAsync();
-            return Ok(eventosPorDia);
+            var eventos = await _eventoService.GetEventosPorDiaAsync(fecha);
+            return Ok(eventos);
         }
 
-        [HttpGet("semana/{fecha}")] // Obtiene los eventos de la semana de una fecha específica (formato YYYY-MM-DD)
+        [HttpGet("semana/{fecha}")]
         public async Task<ActionResult<IEnumerable<Evento>>> GetEventosPorSemana(DateTime fecha)
         {
-            var inicioSemana = fecha.Date.AddDays(-(int)fecha.DayOfWeek);
-            var finSemana = inicioSemana.AddDays(7);
-            var eventosPorSemana = await _context.Eventos
-                .Where(e => e.Fecha >= inicioSemana && e.Fecha < finSemana)
-                .ToListAsync();
-            return Ok(eventosPorSemana);
+            var eventos = await _eventoService.GetEventosPorSemanaAsync(fecha);
+            return Ok(eventos);
         }
 
-        [HttpGet("mes/{fecha}")]  // Obtiene los eventos de un mes específico (formato YYYY-MM)
+        [HttpGet("mes/{fecha}")]
         public async Task<ActionResult<IEnumerable<Evento>>> GetEventosPorMes(DateTime fecha)
         {
-            var inicioMes = new DateTime(fecha.Year, fecha.Month, 1);
-            var finMes = inicioMes.AddMonths(1);
-            var eventosPorMes = await _context.Eventos
-                .Where(e => e.Fecha >= inicioMes && e.Fecha < finMes)
-                .ToListAsync();
-            return Ok(eventosPorMes);
+            var eventos = await _eventoService.GetEventosPorMesAsync(fecha);
+            return Ok(eventos);
         }
     }
 }
-
-
-

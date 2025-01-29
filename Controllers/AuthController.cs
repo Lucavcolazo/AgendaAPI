@@ -1,43 +1,26 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using AgendaAPI.Models;
+using AgendaAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IConfiguration _configuration;
+    private readonly AuthService _authService;
 
-    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+    public AuthController(AuthService authService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _configuration = configuration;
+        _authService = authService;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _authService.RegisterAsync(model);
 
         if (result.Succeeded)
         {
-            // Asignar el rol "User" al nuevo usuario
-            await _userManager.AddToRoleAsync(user, "User");
-
-            // Asignar el rol "Admin" si el nombre de usuario es "admin"
-            if (model.Username == "admin")
-            {
-                await _userManager.AddToRoleAsync(user, "Admin");
-            }
-
             return Ok(new { Message = "User registered successfully" });
         }
 
@@ -48,63 +31,12 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
-        if (user == null)
+        var token = await _authService.LoginAsync(model);
+        if (token == null)
         {
             return Unauthorized(new { Message = "Invalid username or password." });
         }
 
-        var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
-
-        if (result.Succeeded)
-        {
-            var token = GenerateJwtToken(user);
-            return Ok(new { Token = token });
-        }
-
-        if (result.IsLockedOut)
-        {
-            return Unauthorized(new { Message = "User account is locked out." });
-        }
-
-        if (result.IsNotAllowed)
-        {
-            return Unauthorized(new { Message = "User is not allowed to sign in." });
-        }
-
-        if (result.RequiresTwoFactor)
-        {
-            return Unauthorized(new { Message = "Two-factor authentication is required." });
-        }
-
-        return Unauthorized(new { Message = "Invalid username or password." });
-    }
-
-    private string GenerateJwtToken(ApplicationUser user)
-    {
-        try
-        {
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiresInMinutes"])),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error generating JWT token: " + ex.Message);
-        }
+        return Ok(new { Token = token });
     }
 }
